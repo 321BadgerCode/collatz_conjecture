@@ -6,10 +6,12 @@
 
 using namespace std;
 
-bool is_even(const int a1){return a1%2==0;}
-const int get_odd(const int a1){return (3*a1)+1;}
-const int get_even(const int a1){return a1/2;}
-const int get_num(const int a1){return is_even(a1)?get_even(a1):get_odd(a1);}
+typedef unsigned long long ULL;
+
+const bool is_even(const ULL a1){return a1%2==0;}
+const ULL get_odd(const ULL a1){return (3*a1)+1;}
+const ULL get_even(const ULL a1){return a1/2;}
+const ULL get_num(const ULL a1){return is_even(a1)?get_even(a1):get_odd(a1);}
 
 class clr{
 public:
@@ -160,22 +162,22 @@ string get_input(const string a1){
 	return a2;
 }
 
-int get_arg(const string cmd_arg){
-	int num=0;
+unsigned long long get_arg(const string cmd_arg){
+	unsigned long long num=0;
 	int pos=0;
 	int exp=0;
 	for(char c:cmd_arg){
 		if(c=='^'){
-			exp=stoi(cmd_arg.substr(pos+1,cmd_arg.length()-pos));
+			exp=stoll(cmd_arg.substr(pos+1,cmd_arg.length()-pos));
 			break;
 		}
 		pos++;
 	}
 	if(exp!=0){
-		num=pow(stoi(cmd_arg.substr(0,pos)),exp);
+		num=pow(stoll(cmd_arg.substr(0,pos)),exp);
 	}
 	else{
-		num=stoi(cmd_arg);
+		num=stoll(cmd_arg);
 	}
 	return num;
 }
@@ -228,7 +230,7 @@ string get_table(string** table,int rows,int cols){
 }
 
 int main(int args,char* argv[]){
-	int num=get_random();
+	unsigned long long num=get_random();
 	if(args>1){
 		if((string)argv[1]=="-h"){
 			print(get_file_clr("./logo.txt")+"\n");
@@ -274,6 +276,7 @@ int main(int args,char* argv[]){
 
 			while(num<=0){
 				print(new text{.txt="0<#<∞!",.fg=red});
+				print("(if ur seeing this message & ur input is a natural #, then it may be > (2^64)-1)");
 				num=get_arg(get_input("#: "));
 			}
 		}
@@ -281,7 +284,8 @@ int main(int args,char* argv[]){
 	const int a1=num;
 
 	int a=0;
-	string** table=new string*[num];
+	unsigned long long last_num=0;
+	//string** table=new string*[num];
 	while(num!=1){
 print_row:
 		string num_fmt=get_num_fmt(to_string(num));
@@ -291,12 +295,15 @@ print_row:
 				(num!=1?(is_even(num)?get_ui(num_fmt,green)+"/2":"(3*"+get_ui(num_fmt,green)+")+1")+get_ui("=",clr(white,clr::types::dim))+get_ui(get_num_fmt(to_string(get_num(num))),clr(blue,clr::types::bold)):get_ui("end",indigo));
 		(a==0?print_box(row,'-'):print(row));
 
+			if(num<=0||num==last_num){print(new text{.txt="[._.]: AN ERROR OCCURED IN THE PROGRAM!!!",.fg=red});break;}
+			if(a%2==0){last_num=num;}
+
 			if(num==1){break;}
 			num=get_num(num);
 			a++;
 			if(num==1){goto print_row;}
 
-			table[a]=new string[4]{to_string(a),to_string(num),is_even(num)?"even":"odd",to_string(get_num(num))};
+			//table[a]=new string[4]{to_string(a),to_string(num),is_even(num)?"even":"odd",to_string(get_num(num))};
 	}
 	// TODO: fix table (segfault).
 	//print(get_table(table,a+1,4));

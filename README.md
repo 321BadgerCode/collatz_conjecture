@@ -2,6 +2,11 @@
 
 This C++ program applies the Collatz Conjecture to a given number or a randomly generated number and calculates the number of iterations until reaching 1.
 
+```diff
+- This program cannot work with super large #'s (largest input # is (2^64)-1).
+	- This is due to the fact that the program uses an unsigned long long data type which stores 64 bits.
+- TODO: implement a table for displaying the rows rather than using tabular indents.
+```
 ## Preview
 
 > Information about the program.  
