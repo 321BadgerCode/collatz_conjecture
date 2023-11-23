@@ -4,13 +4,13 @@ This C++ program applies the Collatz Conjecture to a given number or a randomly 
 
 ## Preview
 
-> Information about the program.
+> Information about the program.  
 ![Info.](./info.jpg)
 
-> This depicts a property of the Collatz Conjecture which is that if a number is multiplied by 2, then it will take 1 more iteration to reach 1.
+> This depicts a property of the Collatz Conjecture which is that if a number is multiplied by 2, then it will take 1 more iteration to reach 1.  
 ![#*2=>n+1](./times_2.jpg)
 
-> This shows how you can use numbers in exponential form such as `2^10` as input.
+> This shows how you can use numbers in exponential form such as `2^10` as input.  
 ![#*2=>n+1(2)](./times_2(2).jpg)
 
 ## Getting Started
