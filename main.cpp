@@ -229,9 +229,29 @@ string get_table(string** table,int rows,int cols){
 	return ans;
 }
 
-int main(int args,char* argv[]){
+void write_json(string file_name,vector<string> labels,vector<vector<string>> data){
+	ofstream file(file_name);
+	file<<"{\n";
+	for(int a=0;a<data.size();a++){
+		if(labels.size()!=data[a].size()){
+			return;
+		}
+		file<<"\t{\n";
+		for(int b=0;b<labels.size();b++){
+			string end=b==labels.size()-1?"":",";
+			file<<"\t\t\""<<labels[b]<<"\":\""<<data[a][b]<<"\""+end+"\n";
+		}
+		string end=a==data.size()-1?"":",";
+		file<<"\n\t}"+end+"\n";
+	}
+	file<<"}";
+	file.close();
+}
+
+int main(int argc,char* argv[]){
 	unsigned long long num=get_random();
-	if(args>1){
+	string filename="";
+	if(argc>1){
 		if((string)argv[1]=="-h"){
 			print(get_file_clr("./logo.txt")+"\n");
 			print(new text{.txt="usage:\t"+(string)argv[0]+" <#>",.fg=red});
@@ -240,6 +260,9 @@ int main(int args,char* argv[]){
 			print(new text{.txt="-a:\tabout.",.fg=yellow});
 			print(new text{.txt="-i:\tinfo.",.fg=green});
 			print(new text{.txt="-c:\tcontext.",.fg=blue});
+			print(new text{.txt="-s <filename=\"./data.json\">:\tsave data to json file.",.fg=indigo});
+			print("");
+			print(new text{.txt="> NOTE: if using parameter that uses argument such as \"-s\", it must come after \'<#>\' like \""+(string)argv[0]+" 1 -s\"",.fg=violet});
 			exit(0);
 		}
 		else if((string)argv[1]=="-a"){
@@ -272,6 +295,10 @@ int main(int args,char* argv[]){
 			exit(0);
 		}
 		else{
+			if(argc>2&&(string)argv[2]=="-s"){
+				filename=argc>3?(string)argv[3]:"./data.json";
+			}
+
 			num=get_arg(argv[1]);
 
 			while(num<=0){
@@ -286,29 +313,35 @@ int main(int args,char* argv[]){
 	int a=0;
 	unsigned long long last_num=0;
 	//string** table=new string*[num];
+	vector<vector<string>> data;
 	while(num!=1){
 print_row:
 		string num_fmt=get_num_fmt(to_string(num));
-		string row=	get_ui(get_num_fmt(to_string(a))+".\t",red)+
-				get_ui(num_fmt,orange)+"\t"+
-				(is_even(num)?get_ui("even",yellow):get_ui("odd",yellow))+"\t"+
+		data.push_back({get_num_fmt(to_string(a)),num_fmt,is_even(num)?"even":"odd",(num!=1?(is_even(num)?num_fmt+"/2":"(3*"+num_fmt+")+1"):"end")});
+		string row=	get_ui(data[a][0]+".\t",red)+
+				get_ui(data[a][1],orange)+"\t"+
+				get_ui(data[a][2],yellow)+"\t"+
 				(num!=1?(is_even(num)?get_ui(num_fmt,green)+"/2":"(3*"+get_ui(num_fmt,green)+")+1")+get_ui("=",clr(white,clr::types::dim))+get_ui(get_num_fmt(to_string(get_num(num))),clr(blue,clr::types::bold)):get_ui("end",indigo));
 		(a==0?print_box(row,'-'):print(row));
 
-			if(num<=0||num==last_num){print(new text{.txt="[._.]: AN ERROR OCCURED IN THE PROGRAM!!!",.fg=red});break;}
-			if(a%2==0){last_num=num;}
+		if(num<=0||num==last_num){print(new text{.txt="[._.]: AN ERROR OCCURED IN THE PROGRAM!!!",.fg=red});break;}
+		if(a%2==0){last_num=num;}
 
-			if(num==1){break;}
-			num=get_num(num);
-			a++;
-			if(num==1){goto print_row;}
+		if(num==1){break;}
+		num=get_num(num);
+		a++;
+		if(num==1){goto print_row;}
 
-			//table[a]=new string[4]{to_string(a),to_string(num),is_even(num)?"even":"odd",to_string(get_num(num))};
+		//table[a]=new string[4]{to_string(a),to_string(num),is_even(num)?"even":"odd",to_string(get_num(num))};
 	}
 	// TODO: fix table (segfault).
 	//print(get_table(table,a+1,4));
 
 	print("\n"+get_ui(get_num_fmt(to_string(a1)),red)+" is 1 after "+get_ui(get_ui(get_ui(get_num_fmt(to_string(a)),clr(green,clr::types::under_line)),clr(green,clr::types::bold)),clr(green,clr::types::over_line))+" iterations.");
+
+	if(filename!=""){
+		write_json(filename,{"iteration","num","type","equ"},data);
+	}
 
 	return 0;
 }

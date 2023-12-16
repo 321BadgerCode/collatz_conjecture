@@ -67,6 +67,27 @@ attrib +x ./a.exe
 > Replace `<number>` with the desired starting number.  
 Number must be a natural number (0<#<∞).
 
+<details>
+
+<summary>Command Line Arguments</summary>
+
+**Usage:** `./a.out <#>`
+
+| Argument | Description |
+| --- | --- |
+| `-h` | help |
+| `-a` | about |
+| `-i` | info |
+| `-c` | context |
+| `-s <filename="./data.json">` | save data to json file |
+
+> NOTE: If using a parameter that uses an argument such as `-s`, then the argument must come after `<#>` like:
+```sh
+./a.out 1 -s
+```
+
+</details>
+
 ## History
 
 The Collatz conjecture, also known as the 3n+1 problem, is one of the most famous unsolved problems in mathematics. It was first proposed by Lothar Collatz in 1937, although it had been independently discovered by others earlier. The conjecture is very simple to state, but it has proven to be extremely difficult to prove.
